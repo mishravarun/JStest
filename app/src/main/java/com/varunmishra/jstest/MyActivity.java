@@ -18,13 +18,13 @@ import com.evgenii.jsevaluator.interfaces.JsCallback;
 
 public class MyActivity extends Activity {
     static TextView t;
+    public TestService tst = new TestService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        if (!TestService.isRunning)
-            stopService(new Intent(getApplicationContext(), TestService.class));
+
 
         Button b = (Button) findViewById(R.id.button);
         t = (TextView) findViewById(R.id.textView);
@@ -32,9 +32,9 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (!isMyServiceRunning())
-                    startService(new Intent(getBaseContext(), TestService.class));
-                for (int i = 0; i < 5; i++)
-                    TestService.calc(getApplicationContext(), i);
+                    startService(new Intent(getBaseContext(), tst.getClass()));
+                for (int i = 0; i <= 3; i++)
+                    tst.calc(getApplicationContext(), i);
             }
 
         });
@@ -50,10 +50,12 @@ public class MyActivity extends Activity {
         return false;
     }
 
-    public static void refresh(String result) {
+    public void refresh(String result) {
         t.setText(result);
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,7 +83,8 @@ public class MyActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!TestService.isRunning)
-            stopService(new Intent(getApplicationContext(), TestService.class));
+        if(!tst.isRunning)
+            stopService(new Intent(getApplicationContext(),tst.getClass()));
+
     }
 }

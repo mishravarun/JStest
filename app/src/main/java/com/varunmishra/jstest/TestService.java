@@ -83,9 +83,11 @@ public class TestService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
     }
-    public static void calc(final Context con, final int iteration){
+    public void calc(final Context con, final int iteration){
+        isRunning=true;
         JsEvaluator jsEvaluator = new JsEvaluator(con);
         jsEvaluator.callFunction("function myFunction(a, b, c, d) { var x = val(a,b);return x;}" +
                         "function val(c,d){" +
@@ -97,8 +99,12 @@ public class TestService extends Service {
                     @Override
                     public void onResult(final String result) {
                         // get result here
-                        MyActivity.refresh(""+iteration);
-                        if(iteration==5)isRunning=false;
+                        new MyActivity().refresh(""+iteration);
+                        if(iteration==3){
+                            isRunning=false;
+
+                            stopSelf();
+                        }
                     }
                 }, "myFunction", "parameter 1", "parameter 2", 912, 101.3);
 
